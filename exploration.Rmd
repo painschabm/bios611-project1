@@ -1,0 +1,67 @@
+---
+title: "Electoral College and 2020 Census"
+author: "Matt Painschab"
+date: "8/31/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+#view heads
+
+head(polls)
+head(electoralvotes)
+
+#merge data
+merged <- left_join(
+  electoralvotes, 
+  polls, 
+  by = "state")
+
+head(merged)   # visualize merged data
+
+# keep only most recent polling average and only Biden and Trump
+today <- Sys.Date()
+merged_clean <- filter(merged, is.na(modeldate) | modeldate == "8/31/20")
+
+merged_clean <- filter(merged_clean, 
+                       is.na(candidate_name) |
+                       candidate_name == "Joseph R. Biden Jr." |
+                         candidate_name == "Donald Trump")
+
+head(merged_clean)
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r, echo = FALSE}
+data <- filter(merged, candidate_name == "Joseph R. Biden Jr." | is.na(candidate_name)
+
+ggplot(data, aes(x = votes_2010, color = pct_trend_adjusted)) + geom_histogram(color = "black", fill = "blue", alpha = 0.5,  binwidth = 1) + labs(x = "Electoral Votes 2010", y = "Number of States")
+ 
+ggplot(data, aes(x = votes_2020, color = pct_trend_adjusted)) + 
+  geom_histogram(color = "black", fill = "blue", alpha = 0.5,  
+                 binwidth = 1, labs=)
+
+a <- na.omit(merged_clean)
+
+ggplot(a, aes(x = candidate_name, y = pct_trend_adjusted)) +
+  geom_boxplot(notch=TRUE, alpha=0.8) +
+  labs(title="Weighted Mean Polling Average By State", x="Candidate", y="Polling Average") +
+  ylim(25,75)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
