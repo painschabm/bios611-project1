@@ -18,6 +18,19 @@ districts in 2020 election. I am also interested in how the electoral college wo
 
 I also aim to visualize some other aspects of interest, for example, voters per electoral college vote by state.
 
+Preliminary Figures
+-------------------
+![](votes_by_state_2010.png)
+
+The above figure shows the distribution of electoral college votes by state or congressional district for Maine and Nebraska which distribute two votes for the state wide winner and the rest by congressional district.
+
+![](votes_by_state_2020.png)
+
+The above figure shows the likely distribution of electoral college votes by state after the 2020 census.
+
+![](polling_averages.png)
+
+The above figure shows the polling averages averaged over the most competitive states that are tracked by FiveThirtyEight (data as of August 31, 2020).
 
 Usage
 -----
