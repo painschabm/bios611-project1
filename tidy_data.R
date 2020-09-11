@@ -9,9 +9,12 @@ merged <- left_join(
   by = "state")
 
 today <- Sys.Date()
-merged_clean<- filter(merged, modeldate == "8/31/20"
-                      & (candidate_name == "Joseph R. Biden Jr."
-                         | candidate_name == "Donald Trump"))
+merged_clean <- filter(merged, is.na(modeldate) | modeldate == "8/31/20")
 
-write.csv(merged_clean, "derived_data/merged.csv")
+merged_clean <- filter(merged_clean, 
+                       is.na(candidate_name) |
+                         candidate_name == "Joseph R. Biden Jr." |
+                         candidate_name == "Donald Trump")
 
+write.csv(merged, "derived_data/merged.csv")
+write.csv(merged_clean, "derived_data/merged_clean.csv")
