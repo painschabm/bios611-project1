@@ -1,3 +1,9 @@
 .local/*
 .rstudio/*
 .derived_data/*.csv
+	.DS_Store
+	.bash_history
+	.config/
+	derived_data/merged.csv
+	derived_data/merged_clean.csv
+	source_data/.DS_Store
