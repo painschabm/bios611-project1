@@ -5,6 +5,12 @@ clean:
 	rm derived_data/*
 	rm figures/*
   
+Analysis.pdf:\
+ derived_data/headtohead.csv\
+ Analysis.Rmd
+	R -e "rmarkdown::render('Analysis.Rmd')"
+	
+
 derived_data/headtohead.csv:\
  source_data/electoral_college.csv\
  source_data/presidential_poll_averages_2020.csv\
@@ -20,8 +26,3 @@ figures/votes_by_state_2020.png:\
  figures.R
 	Rscript figures.R
 	
-Analysis.pdf:\
-	derived_data/headtohead.csv\
-	Analysis.Rmd\
-	rend_pdf.R
-		Rscript rend_pdf.R
