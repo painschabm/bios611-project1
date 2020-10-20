@@ -8,7 +8,7 @@ clean:
 Analysis.pdf:\
  derived_data/headtohead.csv\
  Analysis.Rmd
-	R -e "rmarkdown::render('Analysis.Rmd')"
+	R -e "rmarkdown::render('Analysis.Rmd', 'pdf_document')"
 	
 
 derived_data/headtohead.csv:\
