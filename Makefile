@@ -9,10 +9,6 @@ Analysis.pdf:\
  derived_data/headtohead.csv\
  Analysis.Rmd
 	R -e "rmarkdown::render('Analysis.Rmd', 'pdf_document')"
-<<<<<<< HEAD
-=======
-	
->>>>>>> a132f9abade880ac4a3ada347af40a3c767321fe
 
 derived_data/headtohead.csv:\
  source_data/electoral_college.csv\
