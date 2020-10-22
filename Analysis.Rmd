@@ -1,0 +1,167 @@
+---
+title: "Comparison of Electoral College Districts, 2010 vs 2020"
+output:
+  pdf_document: default
+Author: Painschab, Matthew
+Date: 10/7/2020
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+headtohead <- read.csv("./derived_data/headtohead.csv")
+
+```
+
+Description of data set
+-----------------------
+This data is derived from two sources: 
+1) the most recent weighted polling average across competitive states and 
+electoral college districts for Nebraska and Maine from fivethirtyeight and 
+2) a data set of the current number of electoral college votes in place today 
+based on the 1990 census and another based on the projected 2020 census and 
+projected reapportionment of congressional districts that will be in place 
+for the 2022 congressional elections and 2024 presidential election.
+
+General description of the question
+-----------------------------------
+2020 is an extreme in that the census occurs every 10 years and reappartionment
+happens at that time as well. Therefore, a presidential election that falls in
+census year provides the most distrortion in that the the changes in population
+over the last ten years have not been reflected in the current electoral
+college. My hypothesis is that this will have an important impact on the
+final outcome of the electoral college.
+
+## 1. Analyze how the average population per electoral vote varies and how this
+## has changed from 2010 to 2020.
+
+1A. Mean population per electoral college vote is higher in states that Biden is
+leading by both the 2010 census and 2020 census, by about 60,000 people per 
+electoral vote in both scenarios.
+
+```{r, echo=FALSE}
+
+totals2 <- headtohead %>% 
+  group_by(winner) %>% 
+  summarize(mean_pop_10 = mean(poppervote_2010), 
+            mean_pop_20 = mean(poppervote_2020))
+totals2
+```
+
+1B. This figure demonstrates how each state population has shifted from 2010
+to 2019, showing how the average population per electoral vote has changed 
+since the last census. The black dot is the population per electoral vote in 
+2010 and the yellow dot is the population per electoral vote in 2020 (before 
+reapportionment that will take place in 2022). They are arranged in order of 
+population per electoral vote in 2010. Most notably, there is a very large range
+of population per electoral vote (from around 200,000 in the smallest states)
+to around 700,000 in the largest states. This effectively demonstrates the outsize
+importance that small states get in selecting our president compared to their
+population.
+
+As you can see, almost every state has had their population grow since 2010 (with a few exceptions). Clearly, as demonstrated by the blue (Biden) and red (Trump) lines, states that are currently polling for Biden have gained much more population per electoral vote
+in the last ten years.
+
+```{r, echo=FALSE}
+options(scipen = 100000)
+
+pop2019vote2010 <- headtohead %>% 
+  mutate(newpop_oldvote = pop_2019/votes_2010) %>% 
+  filter(votes_2010>1)
+
+pop2019vote2010 %>%
+  mutate(state = fct_reorder(state, poppervote_2010)) %>%
+ggplot(aes(y = state)) + 
+  geom_segment(aes(x = poppervote_2010, xend = newpop_oldvote, yend = state, 
+                   color = winner)) +
+  geom_point(aes(x = poppervote_2010)) +
+  geom_point(aes(x = newpop_oldvote, color = "yellow")) +
+  scale_color_manual(values = c("blue", "red", "yellow")) +
+  labs(x = "Population Per Electoral Vote") +
+  theme(axis.title.y=element_blank(), legend.position = "none")
+
+```
+
+## 2. Review how the electoral college vote change from 2010 to 2020 would have 
+## looked based on the results of the 2016 election.
+
+2A. Electoral College distribution 2016 election by number of states and/or 
+districts with 2010 electoral college.
+
+```{r, echo=FALSE}
+ggplot(headtohead, aes(x = votes_2010, fill = trump_clinton)) + 
+     geom_histogram(alpha = 0.5, binwidth = 1) + 
+     scale_fill_manual(values = c("blue", "red")) +
+     labs(x = "Electoral Votes 2010", y = "Number of States/Districts", 
+          fill = "2016")
+```
+
+2B. Electoral College distribution 2016 election by number of states and/or 
+districts with projected 2020 electoral college.
+
+```{r, echo=FALSE}
+ggplot(headtohead, aes(x = votes_2020, fill = trump_clinton)) + 
+     geom_histogram(alpha = 0.5, binwidth = 1) + 
+     scale_fill_manual(values = c("blue", "red")) +
+     labs(x = "Electoral Votes 2020", y = "Number of States/Districts", 
+          fill = "2016")
+```
+
+2C. Summary of how the 2016 election results with current electoral map verus
+projected 2020 electoral map. 
+
+```{r, echo=FALSE}
+totals_2016 <- headtohead %>% 
+  group_by(trump_clinton) %>% 
+  summarize(elec_votes_10 = sum(votes_2010), 
+            elec_votes_20 = sum(votes_2020))
+totals_2016
+```
+
+Conlusion Section 2: Shifts of population across states from 2010 to 2020 would not
+have greatly changed the outcome of the election. In fact, Trump would have won
+by a slightly larger margin under the projected 2020 electoral college map.
+
+## 3. Review Electoral College Votes for 2020 election By 2010 Distribution and 
+## 2020 Expected Distribution
+
+3A. Electoral College distribution 2010 by number of states and/or districts with 
+currently projected winner by color.
+
+```{r, echo=FALSE}
+ggplot(headtohead, aes(x = votes_2010, fill = winner)) + 
+  geom_histogram(alpha = 0.5, binwidth = 1) + 
+  scale_fill_manual(values = c("blue", "red")) +
+  labs(x = "Electoral Votes 2010", y = "Number of States/Districts")
+
+```
+
+3B. Electoral College distribution 2020 by number of states and/or districts with 
+currently projected winner by color.
+
+```{r, echo=FALSE}
+ggplot(headtohead, aes(x = votes_2020, fill = winner)) + 
+  geom_histogram(alpha = 0.5, binwidth = 1) + 
+  scale_fill_manual(values = c("blue", "red")) +
+  labs(x = "Electoral Votes 2020", y = "Number of States/Districts")
+```
+
+3C. Summary of how the election would look based on current polls 
+with current electoral map verus projected 2020 electoral map. 
+
+```{r, echo=FALSE}
+totals <- headtohead %>% 
+  group_by(winner) %>% 
+  summarize(elec_votes_10 = sum(votes_2010), 
+            elec_votes_20 = sum(votes_2020))
+totals
+```
+
+Conlusions Section 3: The majority of states currently projected to go for Donald Trump 
+are small states with at or below 10 electoral votes per state. 
+The exception is Texas. This reflects the poor polling position that 
+President Trump is currently in. The changes expected in 2020 would have very 
+little effect, in fact again, would move the electoral college vote 
+slightly towards President Trump.
