@@ -1,0 +1,133 @@
+---
+title: "HeightWeight"
+output: 
+  pdf_document: default
+Author: Matthew Painschab
+Date: 10/22/2020
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(gbm)
+library(MLmetrics)
+
+```
+
+## Problem 1
+
+Build a glm in R to classifier individuals as either Male or Female based on their weight and height.
+
+```{r}
+heightweight <- read.csv("source_data/height_weight.csv")
+
+# Remove all missing data
+heightweight <- na.omit(heightweight)
+
+# Change all values to numeric values
+heightweight$Gender[heightweight$Gender == "Male"]   <- 1
+heightweight$Gender[heightweight$Gender == "Female"] <- 0
+heightweight$Gender <- as.numeric(heightweight$Gender)
+heightweight$Height <- as.numeric(heightweight$Height)
+heightweight$Weight <- as.numeric(heightweight$Weight)
+heightweight$Index <- as.numeric(heightweight$Index)
+
+# Build glm model
+glm1 <- glm(Gender ~ Height + Weight, data = heightweight)
+summary(glm1)
+
+```
+
+What is the accuracy of the model?
+The model is very innacurate, only predicting correctly 52% of the time.
+
+```{r}
+pred <- predict(glm1, newdata = heightweight, type="response")
+sum((pred>0.5) == heightweight$Gender)/nrow(heightweight)
+
+```
+
+## Problem 2
+Use the 'gbm' package to train a similar model. Don't worry about hyper parameter tuning for now.
+
+```{r}
+gbm1 <- gbm(Gender ~ Height + Weight, data = heightweight)
+summary(gbm1)
+
+
+```
+
+What is the accuracy of the model?
+The model is a bit more accurate, predicting correctly in almost 2/3 of instances.
+
+```{r}
+
+pred <- predict(gbm1, newdata = heightweight, type="response")
+sum((pred>0.5) == heightweight$Gender)/nrow(heightweight)
+
+```
+
+## Problem 3
+The F1_Score formula doesn't seem to be working here despite a lot of trouble shooting. I tried to calculate the f1 score manually based on the fact that every single person is predicted to be a man in this model set up. F1 comes out to be 2/3 by my math.
+
+```{r}
+
+#Filter the data set so that it contains only 50 Male examples. 
+
+model_split <- heightweight %>% 
+  slice_max(Gender) %>% 
+  slice_sample(n = 50)
+
+# Create a new model for this data set.
+
+gbm2 <- gbm(Gender ~ Height + Weight, data = model_split)
+
+
+#  What is the F1 Score of the model?
+
+heightweight$pred <- predict(gbm2, newdata = heightweight, type="response")
+heightweight <- mutate(heightweight, prediction = ifelse(pred > 0.5, 1, 0))
+F1_Score(heightweight$Gender, heightweight$prediction)
+
+
+f1 <- 1 / (1 + (0.5 * (1 + 0)))
+f1
+```
+
+## Problem 4
+
+For the model in the previous example plot an ROC curve. What does this ROC curve mean?
+
+This ROC curve means that becuase the model predicts man for every single person, it is a very poor predictive model, only as good as chance.
+
+```{r}
+pred <- predict(gbm2, newdata = heightweight, type="response")
+
+roc <- do.call(rbind, Map(function(threshold){
+    p <- pred > threshold;
+    tp <- sum(p[heightweight$Gender])/sum(heightweight$Gender);
+    fp <- sum(p[!heightweight$Gender])/sum(!heightweight$Gender);
+    tibble(threshold=threshold,
+           tp=tp,
+           fp=fp)
+},seq(100)/100))
+
+ggplot(roc, aes(fp,tp)) + geom_line() + xlim(0,1) + ylim(0,1) +
+    labs(title="ROC Curve",x="False Positive Rate",y="True Positive Rate")
+
+```
+
+## Problem 5
+Using K-Means, cluster the same data set. Can you identify the clusters with the known labels? Provide an interpretation of this result.
+
+
+
+```{r}
+clusters <- kmeans(heightweight, 6)
+clusters$centers
+
+```
+
+
+I attempted to cluster into six groups for the six different BMI measurements. However, this appears to instead cluster into three different BMI groups per gender. As listed in the results above, you see clusters 1, 3, and 5 are women and 2, 4 and 6 are men and they are then stratified by other factors. Among women, they are primarily stratified in descending order of BMI, 3 > 1 > 5. However, among men, clusters 2 and 4 have similar BMI but 4 is much taller and heavier than 2 and then cluster 6 is very low BMI.
