@@ -7,3 +7,5 @@
 	derived_data/merged.csv
 	derived_data/merged_clean.csv
 	source_data/.DS_Store
+.figures/*.png
+
