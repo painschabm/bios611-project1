@@ -4,6 +4,7 @@ SHELL: /bin/bash
 clean:
 	rm derived_data/*
 	rm figures/*
+	rm Analysis.pdf
   
 Analysis.pdf:\
  derived_data/headtohead.csv\
