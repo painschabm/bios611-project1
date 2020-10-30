@@ -6,6 +6,7 @@ RUN R -e "install.packages('rmarkdown')"
 RUN R -e "install.packages('gbm')"
 RUN R -e "install.packages('MLmetrics')"
 RUN R -e "install.packages('ggfortify')"
+RUN R -e "install.packages('caret')"
 
 RUN apt update -y && apt install -y python3-pip
 RUN pip3 install jupyter jupyterlab
