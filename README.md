@@ -17,11 +17,13 @@ This Docker container is based on rocker/verse. To connect, run Rstudio server:
 
 Then connect to the machine on port 8787.
 
-To run the Shiny app of the number of people per electoral vote separated by candidate, you will need to run the following in bash, replacing {PORT} with any port number >5000 that you wish to use.
-	> source aliases.sh
-	> start_shiny {PORT} states
+To run the Shiny app of the number of people per electoral vote
+ separated by candidate, you will need to run the following in bash,
+ replacing PORT with any port number that you wish to use.
 
-Then, you should run the following script, 
+	> source aliases.sh
+
+	> start_shiny PORT states
 
 To run Python you'll need to connect to Docker as follows:
 
