@@ -18,18 +18,14 @@ headtohead <- read.csv("./derived_data/headtohead.csv")
 Description of data set
 -----------------------
 This data is derived from two sources: 
-1) the most recent weighted polling average across competitive states and 
-electoral college districts for Nebraska and Maine from fivethirtyeight and 
-2) a data set of the current number of electoral college votes in place today 
-based on the 1990 census and another based on the projected 2020 census and 
-projected reapportionment of congressional districts that will be in place 
-for the 2022 congressional elections and 2024 presidential election.
+1) the most recent weighted polling average across competitive states and electoral college districts for Nebraska and Maine from fivethirtyeight and 
+2) a data set of the current number of electoral college votes in place today based on the 1990 census and another based on the projected 2020 census and projected reapportionment of congressional districts that will be in place for the 2022 congressional elections and 2024 presidential election.
 
 General description of the question
 -----------------------------------
-2020 is an extreme in that the census occurs every 10 years and reappartionment
+2020 is an extreme in that the census occurs every 10 years and reapportionment
 happens at that time as well. Therefore, a presidential election that falls in
-census year provides the most distrortion in that the the changes in population
+census year provides the most distortion in that the the changes in population
 over the last ten years have not been reflected in the current electoral
 college. My hypothesis is that this will have an important impact on the
 final outcome of the electoral college.
