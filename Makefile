@@ -1,4 +1,5 @@
 .PHONY: clean
+.PHONY: states
 SHELL: /bin/bash
 
 # Clean the repository of any artifacts
@@ -6,7 +7,13 @@ clean:
 	rm derived_data/*
 	rm figures/*
 	rm Analysis.pdf
-  
+	
+# Create Shiny File
+states:\
+	derived_data/headtohead.csv\
+	states.R
+		Rscript states.R ${PORT}
+
 # Make final report
 Analysis.pdf:\
  derived_data/headtohead.csv\
